@@ -19,6 +19,7 @@
         <div class="input__wrap">
           <input type="text" id="input" placeholder="Type a word" />
           <button id="search">Search</button>
+          <!-- <button class="suggested">Hola</button> -->
         </div>
       </div>
     </section>
@@ -28,6 +29,26 @@
       <p class="def"></p>
       <div class="audio"></div>
       <div class="not__found"></div>
+    </section>
+    <section class="container textSpeech">
+      <textarea id="text" placeholder="Convert your Text into Speech">
+      </textarea>
+      <div class="manage">
+        <label class="speedLabel" for="speed">Speed</label>
+        <input
+          type="number"
+          name="speed"
+          id="speed"
+          min=".5"
+          max="5"
+          step=".5"
+          value="1"
+        />
+        <button class="run" id="play-button">Play</button>
+        <button class="run" id="pause-button">Pause</button>
+        <button class="run" id="stop-button">Stop</button>
+        <button class="run" id="clear">Clear</button>
+      </div>
     </section>
     <script src="app.js"></script>
   </body>
