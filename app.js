@@ -5,17 +5,40 @@ let notFound = document.querySelector(".not__found");
 let defBox = document.querySelector(".def");
 let audioBox = document.querySelector(".audio");
 let loading = document.querySelector(".loading");
+let suggestedBtn = document.querySelector(".suggested");
+
+const playButton = document.getElementById("play-button");
+const pauseButton = document.getElementById("pause-button");
+const stopButton = document.getElementById("stop-button");
+const clearButton = document.getElementById("clear");
+const textInput = document.getElementById("text");
+const speedInput = document.getElementById("speed");
 
 searchBtn.addEventListener("click", (e) => {
   e.preventDefault();
 
+  // get the input data
+  let word = input.value;
+
+  searching(word);
+});
+
+// if (suggestedBtn) {
+// suggestedBtn.addEventListener("click", (e) => {
+//   e.preventDefault();
+//   // console.log(e.target.innerText);
+
+//   const word = e.target.innerText;
+
+//   searching(word);
+// });
+// }
+
+function searching(word) {
   // clear the old data
   audioBox.innerHTML = "";
   defBox.innerText = "";
   notFound.innerText = "";
-
-  // get the input data
-  let word = input.value;
 
   // Check if the word is entered
   if (word === "") {
@@ -25,7 +48,7 @@ searchBtn.addEventListener("click", (e) => {
   // Get the data from the api
   getData(word);
   input.value = "";
-});
+}
 
 async function getData(word) {
   loading.style.display = "block";
@@ -36,7 +59,7 @@ async function getData(word) {
   );
 
   const data = await response.json();
-  console.log(data);
+  // console.log(data);
 
   // Data is empty - Result is empty
   if (!data.length) {
@@ -85,4 +108,55 @@ function renderSound(soundName) {
   aud.controls = true;
 
   audioBox.appendChild(aud);
+}
+
+// Text to Speech
+let currectCharacter;
+
+playButton.addEventListener("click", () => {
+  playText(textInput.value);
+});
+
+stopButton.addEventListener("click", stopText);
+
+pauseButton.addEventListener("click", pauseText);
+
+clearButton.addEventListener("click", () => {
+  textInput.value = "";
+});
+
+speedInput.addEventListener("input", () => {
+  stopText();
+  playText(utterance.text.substring(currectCharacter));
+});
+
+const utterance = new SpeechSynthesisUtterance();
+
+utterance.addEventListener("end", () => {
+  textInput.disabled = false;
+});
+
+utterance.addEventListener("boundary", (e) => {
+  currectCharacter = e.charIndex;
+});
+
+function playText(text) {
+  if (speechSynthesis.paused && speechSynthesis.speaking) {
+    return speechSynthesis.resume();
+  }
+  utterance.text = text;
+  utterance.rate = speedInput.value || 1;
+  textInput.disabled = true;
+  speechSynthesis.speak(utterance);
+}
+
+function pauseText() {
+  if (speechSynthesis.speaking) {
+    speechSynthesis.pause();
+  }
+}
+
+function stopText() {
+  speechSynthesis.resume();
+  speechSynthesis.cancel();
 }
